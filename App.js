@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react'; 
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
-// import React from 'react';
+import React from 'react';
 
 export default function App() {
     let [isLoading, setIsLoading] = useState(true);
@@ -32,7 +32,7 @@ export default function App() {
       return <Text>{error}</Text>
     }
     console.log(response);
-    return <Text>Bitcoin (USD): </Text>
+    return <Text>Bitcoin (USD): {response["bpi"]["USD"].rate} </Text>
   }
 
   return (
