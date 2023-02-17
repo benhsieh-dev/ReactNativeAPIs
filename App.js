@@ -1,47 +1,41 @@
-import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react'; 
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect }  from "react";
+import { StyleSheet, Text, View, SafeAreaView, FlatList, ActivityIndicator } from "react-native";
 
-export default function App() {
-    let [isLoading, setIsLoading] = useState(true);
-    let [error, setError] = useState();
-    let [response, setResponse] = useState();
+const movieURL = "https://reactnative.dev/movies.json";
 
-  useEffect(() => {
-    fetch("https://api.coindesk.com/v1/bpi/currentprice.json")
-      .then(res => res.json())
-      .then(
-        (result) => {
-          setIsLoading(false);
-          setResponse(result);
-        },
-          (error) => {
-            setIsLoading(false);
-            setError(error);
-          }
-      )
-  }, [])
+const App = () => {
+  const [isLoading, setLoading] = useState(true);
+  const [data, setData] = useState([]);  
 
+    useEffect(() => {
+    fetch(movieURL)
+      .then(response => response.json())
+      .then((json) => setData(json.movies))
+      .catch((error) => alert(error))
+      .finally(setLoading(false))            
+  },[])
 
-  const getContent = () => {
-    if (isLoading) {
-       return <ActivityIndicator size="large" />
-    }
-    if (error) {
-      return <Text>{error}</Text>
-    }
-    console.log(response);
-    return <Text>Bitcoin (USD): {response["bpi"]["USD"].rate} </Text>
-  }
 
   return (
-    <View style={styles.container}>
-       <Text>API App</Text>
-       {getContent()} 
-      <StatusBar style="auto" />
-    </View>
-  );
+    <SafeAreaView style={styles.container}> 
+      {isLoading ? 
+        (<ActivityIndicator /> )
+        :
+        ( <FlatList 
+          data={data}
+          keyExtractor={({ id }, index) => id}
+          renderItem={({ item }) => (
+            <Text>
+              {item.title}
+              {item.releaseYear}
+            </Text>
+          )}
+          
+          
+          />
+          )}     
+    </SafeAreaView>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -52,3 +46,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+export default App; 
